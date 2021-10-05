@@ -3,25 +3,33 @@ import React from 'react';
 const SECURITY_CODE = 'paradigma';
 
 function UseState({ name }) {
-  const [value, setValue] = React.useState('');
-  const [error, setError] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [state, setState] = React.useState({
+    value: '',
+    error: false,
+    loading: false,
+  });
 
-  console.log(value)
+  console.log(state)
 
   React.useEffect(() => {
     console.log("Empezando el efecto")
 
-    if (!!loading) {
+    if (!!state.loading) {
       setTimeout(() => {
         console.log("Haciendo la validación")
   
-        if (value === SECURITY_CODE) {
-          setLoading(false);
-          // setError(false);
+        if (state.value === SECURITY_CODE) {
+          setState({
+            ...state,
+            error: false,
+            loading: false,
+          });
         } else {
-          setError(true);
-          setLoading(false);
+          setState({
+            ...state,
+            error: true,
+            loading: false,
+          });
         }
         
         console.log("terminando la validación")
@@ -29,7 +37,7 @@ function UseState({ name }) {
     }
     
     console.log("Terminando el efecto")
-  }, [loading]);
+  }, [state.loading]);
   
   return (
     <div>
@@ -37,25 +45,29 @@ function UseState({ name }) {
       
       <p>Por favor, escribe el código de seguridad.</p>
 
-      {(error && !loading) && (
+      {(state.error && !state.loading) && (
         <p>Error: el código es incorrecto</p>
       )}
-      {loading && (
+      {state.loading && (
         <p>Cargando...</p>
       )}
 
       <input
         placeholder="Código de seguridad"
-        value={value}
+        value={state.value}
         onChange={(event) => {
-          // setError(false);
-          setValue(event.target.value);
+          setState({
+            ...state,
+            value: event.target.value,
+          });
         }}
       />
       <button
         onClick={() => {
-          // setError(false); // ESTE FUE
-          setLoading(true);
+          setState({
+            ...state,
+            loading: true,
+          });
         }}
       >Comprobar</button>
     </div>
